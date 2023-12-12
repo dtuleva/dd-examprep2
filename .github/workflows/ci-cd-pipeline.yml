@@ -1,4 +1,4 @@
-name: build-test-deploy
+name: build-testUnit-deploy-testUi
 
 on:
   push:
@@ -34,3 +34,23 @@ jobs:
       with:
         service-id: ${{ secrets.RENDER_SERVICE_ID }}
         api-key: ${{ secrets.RENDER_API_KEY }}
+    - name: Mock wait for deploy (30 seconds)
+      run: sleep 30
+  
+  test-ui:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+    - name: Install npm dependencies
+      run: npm install
+    # - name: Setup Playwright
+    #   run: npx playwright install
+    - name: Run UI Tests
+      run: npm run test:ui
