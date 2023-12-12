@@ -1,4 +1,4 @@
-name: build-test
+name: build-test-deploy
 
 on:
   push:
@@ -24,3 +24,13 @@ jobs:
       run: npm run test:unit
     - name: Display SoftUni Username
       run: echo 'dtuleva'
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Render.com
+      uses: johnbeynon/render-deploy-action@v0.0.8
+      with:
+        service-id: ${{ secrets.RENDER_SERVICE_ID }}
+        api-key: ${{ secrets.RENDER_API_KEY }}
